@@ -14,8 +14,6 @@ namespace LoginAuthenticationProject.Models
         }
         public UserModel AddUsers(UserModel user)
         {
-            user.CreatedAt = DateTime.Now;
-            user.UpdatedAt = DateTime.Now;
             try
             {
                 _context.Users.Add(user);
@@ -41,6 +39,22 @@ namespace LoginAuthenticationProject.Models
             }
             
         }
+
+        public string GetUserByNumber(string number)
+        {
+            try {
+                var user = _context.Users.Where(e => e.Contact == number).FirstOrDefault();
+                if (user != null) {
+                    return user.Contact;
+                }
+                return null;
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
         public List<UserModel> GetUsers()
         {
             return _context.Users.ToList();

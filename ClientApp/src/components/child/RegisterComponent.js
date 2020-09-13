@@ -4,13 +4,15 @@ import {
     FormGroup, Label, Input,
     Button,
 } from 'reactstrap';
+import { LOGIN, POST_USER_URL } from '../../constants';
 
 const RegistrationForm = ({ history }) => {
     const initial = {
         name: "",
         username: "",
         password: '',
-        image:"https://via.placeholder.com/300.png/09f/fff%20C/O%20https://placeholder.com/"
+        image: "https://via.placeholder.com/300.png/09f/fff%20C/O%20https://placeholder.com/",
+        contact:""
     }
     const [state, setState] = useState(initial)
     const submitHandler = (e) => {
@@ -23,13 +25,13 @@ const RegistrationForm = ({ history }) => {
                 },
                 body: JSON.stringify(state)
             }
-            fetch("/home/post-user", options)
+            fetch(`${POST_USER_URL}`, options)
                 .then(res => res.json())
                 .then(json => {
                     if (json) {
                         alert("successfully registered !!");
                         setState(initial)
-                        history.push('/login');
+                        history.push(LOGIN);
                     }
                     else {
                         alert("unable to register");
@@ -94,6 +96,19 @@ const RegistrationForm = ({ history }) => {
                             name="password"
                             id="password"
                             placeholder="Enter Password"
+                            onChange={onChangeHandler}
+                        />
+                    </FormGroup>
+                </Col>
+                <Col>
+                    <FormGroup>
+                        <Label htmlFor="contact">Contact</Label>
+                        <Input
+                            type="text"
+                            value={state.contact}
+                            name="contact"
+                            id="contact"
+                            placeholder="Enter Your Number"
                             onChange={onChangeHandler}
                         />
                     </FormGroup>

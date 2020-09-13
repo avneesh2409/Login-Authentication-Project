@@ -12,5 +12,6 @@ namespace LoginAuthenticationProject.Models
         {
         }
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<OtpModel> Otps { get; set; }
     }
 }

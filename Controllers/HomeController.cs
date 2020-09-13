@@ -14,34 +14,87 @@ namespace LoginAuthenticationProject.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class HomeController : Controller
     {
         private readonly IConfiguration _config;
         private readonly IUserModel _userContext;
+        private readonly IOtpModel _otpContext;
 
-        public HomeController(IUserModel userContext, IConfiguration config) {
+        public HomeController(IUserModel userContext,IOtpModel otpContext, IConfiguration config) {
             _config = config;
             _userContext = userContext;
+            _otpContext = otpContext;
         }
-        
 
+        #region OTP Authentication
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("verify-otp/{msgId}/{recieveotp}")]
+        public JsonResult VerifyOtp(string msgId,string recieveotp) {
+            OtpModel otp = _otpContext.GetOtp(msgId);
+            if (otp != null)
+            {
+                double diff2 = (DateTime.UtcNow - otp.CreatedAt).TotalMinutes;
+                if (diff2 < 10)
+                {
+                    if (otp.Otp == recieveotp)
+                    {
+                        UserViewModel user = new UserViewModel();
+                        string token = GenerateJSONWebToken(user);
+                        return Json(new { status = true, accessToken = token,message = "verified" });
+                    }
+                    return Json(new { status = false, message = "Please Enter Valid Otp !!" });
+                }
+                else
+                {
+                    return Json(new { status = false, message = "Otp Expired" });
+                }
+
+            }
+            else {
+                return new JsonResult(new { status = false, message = "Invalid Request" });
+            }
+            
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("sent-otp/{number}")]
+        public JsonResult StoreOtp(string number) {
+            string user = _userContext.GetUserByNumber(number);
+            if (user != null)
+            {
+                Random generator = new Random();
+                string otp = generator.Next(0, 999999).ToString("D6");
+                string msgId = SendSms(number, "OTP :- " + otp + "it will expire in 10 minutes");
+                if (msgId != null || msgId != "")
+                {
+                    //string MsgId = generator.Next(0, 999999).ToString();
+                    _otpContext.StoreOtp(new OtpModel
+                    {
+                        MsgId = msgId,
+                        Otp = otp 
+                    });
+                return Json(new { status = true, data = msgId, message = "Otp Sent !!"});
+                }
+                else
+                {
+                    return Json(new { status = false,message = "Enter Valid Number please !!" });
+                }
+            }
+            else {
+                return Json(new { status=false,message="You are not registered ,firstly Register yourself !!"});
+            }
+            
+        }
+        #endregion
 
         #region Sms Service
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("sms")]
-        public JsonResult SmsService(SmsHorizonModel model)
-        {
-            string msgId = SendSms(model.Number, model.Message);
-            return Json(new { data = msgId });
-        }
-
         [HttpGet]
         [Route("sms-status/{msgId}")]
-        public string SmsStatus(string msgId)
+        public string SmsStatus(string MsgId)
         {
-            string smsStatus = SentSmsStatus(msgId);
+            string smsStatus = SentSmsStatus(MsgId);
             return smsStatus;
         }
 

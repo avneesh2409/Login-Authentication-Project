@@ -10,5 +10,6 @@ namespace LoginAuthenticationProject.Models
         UserModel AddUsers(UserModel user);
         UserModel GetSingleUser(string email, string password);
         List<UserModel> GetUsers();
+        string GetUserByNumber(string number);
     }
 }

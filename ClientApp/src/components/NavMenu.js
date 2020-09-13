@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Collapse, Container, Navbar, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import { LOGIN, REGISTER, HOME, LOGOUT } from '../constants';
 
 export const NavMenu = ({ access_token }) => {
         return (
@@ -13,23 +14,20 @@ export const NavMenu = ({ access_token }) => {
                                 {
                                     (!access_token) ? <>
                                         <NavItem>
-                                            <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                                            <NavLink tag={Link} className="text-dark" to={`${LOGIN}`}>Login</NavLink>
                                         </NavItem>
                                         <NavItem>
-                                            <NavLink tag={Link} className="text-dark" to="/register">Register</NavLink>
+                                            <NavLink tag={Link} className="text-dark" to={`${REGISTER}`}>Register</NavLink>
                                         </NavItem>
 
                                     </>
                                         :
                                         <>
                                             <NavItem>
-                                                <NavLink tag={Link} className="text-dark" to="/home">Home</NavLink>
+                                                <NavLink tag={Link} className="text-dark" to={`${HOME}`}>Home</NavLink>
                                             </NavItem>
                                             <NavItem>
-                                                <NavLink tag={Link} className="text-dark" to="/sendsms">Send Sms</NavLink>
-                                            </NavItem>
-                                            <NavItem>
-                                                <NavLink tag={Link} className="text-dark" to="/logout">Logout</NavLink>
+                                                <NavLink tag={Link} className="text-dark" to={`${LOGOUT}`}>Logout</NavLink>
                                             </NavItem>
                                         </>                                       
                                 }

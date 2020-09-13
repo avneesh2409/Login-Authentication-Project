@@ -29,6 +29,7 @@ namespace LoginAuthenticationProject
         {
             services.AddDbContext<AppDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<IUserModel, UserRepository>();
+            services.AddScoped<IOtpModel, OtpRepository>();
 services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

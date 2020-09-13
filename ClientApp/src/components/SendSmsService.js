@@ -4,38 +4,33 @@ import {
     FormGroup, Label, Input,
     Button,
 } from 'reactstrap';
+import { REGISTER, SENT_OTP_URL } from '../constants';
 
-const SmsService = () => {
+const SmsService = ({ setMsgId, setToggleOtp,history }) => {
     const initial = {
-        number: "",
-        message:""
+        number: ""
     }
-    const [msgId, setMsgId] = useState('');
     const [state, setState] = useState(initial)
     const submitHandler = (e) => {
         e.preventDefault()
         if (validateNumber(state.number)) {
-            if (state.message) {
-                let url = `https://localhost:44316/home/sms`;
-                let options = {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                       // 'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(state)
-                }
-                fetch(url, options)
+            let url = `${SENT_OTP_URL}/${state.number}`;
+                fetch(url)
                     .then(res => res.json())
                     .then(json => {
-                        setState(initial)
-                        setMsgId(json.data)
+                        if (json.status) {
+                            setState(initial)
+                            setMsgId(json.data)
+                            setToggleOtp(true)
+                            alert("otp sent to your mobile phone !!");
+                        }
+                        else {
+                            setState(initial)
+                            alert(json.message)
+                            history.push(REGISTER);
+                        }
                     })
                 .catch(err=>console.log(err))
-            }
-            else {
-                alert("message box should not be empty !!");
-            }
         }
         else {
             alert("enter valid number !!");
@@ -54,7 +49,6 @@ const SmsService = () => {
     }
     return (
         <Container className="App">
-            <h2>Sign In</h2>
             <Form className="form" onSubmit={submitHandler}>
                 <Col>
                     <FormGroup>
@@ -64,20 +58,7 @@ const SmsService = () => {
                             name="number"
                             id="number"
                             value={state.number}
-                            placeholder="myemail@email.com"
-                            onChange={onChangeHandler}
-                        />
-                    </FormGroup>
-                </Col>
-                <Col>
-                    <FormGroup>
-                        <Label for="message">Message</Label>
-                        <Input
-                            type="text"
-                            name="message"
-                            id="message"
-                            value={state.message}
-                            placeholder="Enter Message Here....."
+                            placeholder="Enter Your Number"
                             onChange={onChangeHandler}
                         />
                     </FormGroup>
