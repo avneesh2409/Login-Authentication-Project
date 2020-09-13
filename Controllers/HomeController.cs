@@ -40,7 +40,7 @@ namespace LoginAuthenticationProject.Controllers
                 {
                     if (otp.Otp == recieveotp)
                     {
-                        UserViewModel user = new UserViewModel();
+                        UserViewModel user = _userContext.GetUserByMsgId(msgId);
                         string token = GenerateJSONWebToken(user);
                         return Json(new { status = true, accessToken = token,message = "verified" });
                     }
@@ -66,16 +66,17 @@ namespace LoginAuthenticationProject.Controllers
             {
                 Random generator = new Random();
                 string otp = generator.Next(0, 999999).ToString("D6");
-                string msgId = SendSms(number, "OTP :- " + otp + "it will expire in 10 minutes");
+                string msgId = SendSms(number, "OTP :- " + otp + "  it will expire in 10 minutes");
                 if (msgId != null || msgId != "")
                 {
                     //string MsgId = generator.Next(0, 999999).ToString();
+                    _userContext.UpdateOtp(number, msgId);
                     _otpContext.StoreOtp(new OtpModel
-                    {
-                        MsgId = msgId,
-                        Otp = otp 
-                    });
-                return Json(new { status = true, data = msgId, message = "Otp Sent !!"});
+                        {
+                            MsgId = msgId,
+                            Otp = otp
+                        });
+                        return Json(new { status = true, data = msgId, message = "Otp Sent !!" });
                 }
                 else
                 {
@@ -177,10 +178,14 @@ namespace LoginAuthenticationProject.Controllers
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
+            Claim[] claims = new Claim[] { 
+                new Claim("email", userInfo.Email),
+                new Claim("name",userInfo.Name),
+                new Claim("image",userInfo.Image)
+            };
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
-              null,
+              claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
@@ -193,13 +198,13 @@ namespace LoginAuthenticationProject.Controllers
               
             if (user != null)
             {
-                var authUser = new UserViewModel { Id=user.Id,email=user.Username,Name=user.Name,Image=user.Image};
+                var authUser = new UserViewModel { Id=user.Id,Email=user.Username,Name=user.Name,Image=user.Image};
                 return authUser;
             }
             return null;
         }
         #endregion
-       
+
         [AllowAnonymous]
         [HttpPost]
         [Route("post-user")]

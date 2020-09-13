@@ -18,10 +18,10 @@ namespace LoginAuthenticationProject.Models
             {
                 _context.Users.Add(user);
                 _context.SaveChanges();
-                user.Password = null;
                 return user;
             }
             catch (Exception ex) {
+                Console.WriteLine(ex.Message);
                 return null;
             }
         }
@@ -38,6 +38,31 @@ namespace LoginAuthenticationProject.Models
                 return null;
             }
             
+        }
+
+        public UserViewModel GetUserByMsgId(string msgId)
+        {
+            try {
+                var user = _context.Users.FirstOrDefault(e => e.MsgId == msgId);
+                if (user != null) {
+                    return new UserViewModel
+                    {
+                        Id=user.Id,
+                        Email=user.Username,
+                        Image=user.Image,
+                        Name=user.Name
+                    };
+                }
+                else {
+                    return null;
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+           
+
         }
 
         public string GetUserByNumber(string number)
@@ -58,6 +83,23 @@ namespace LoginAuthenticationProject.Models
         public List<UserModel> GetUsers()
         {
             return _context.Users.ToList();
+        }
+
+        public void UpdateOtp(string number,string msgId)
+        {
+            try
+            {
+                var user = _context.Users.FirstOrDefault(e => e.Contact == number);
+                if (user != null)
+                {
+                    user.MsgId = msgId;
+                    user.UpdatedAt = DateTime.UtcNow;
+                    _context.SaveChanges();
+                }
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

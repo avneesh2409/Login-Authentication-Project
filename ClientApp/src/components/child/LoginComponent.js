@@ -71,11 +71,11 @@ const LoginForm = ({ history,setIsLoggedIn }) => {
     const otpSubmitHandler = (e) => {
         e.preventDefault()
         if (validateNumber(state.otp)) {
-            console.log("message Id :-", msgId)
             let url = `${VERIFY_OTP_URL}/${msgId}/${state.otp}`;
                     fetch(url)
                         .then(res => res.json())
                         .then(json => {
+                            console.log("token result :- ", json);
                             if (json.status) {
                                 setState(initial)
                                 localStorage.setItem('token', json.accessToken)

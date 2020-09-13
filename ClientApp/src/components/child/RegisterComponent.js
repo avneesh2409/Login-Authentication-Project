@@ -18,30 +18,40 @@ const RegistrationForm = ({ history }) => {
     const submitHandler = (e) => {
         e.preventDefault()
         if (validateEmail(state.username)) {
-            let options = {
-                method: 'POST',
-                headers: {
-                    'Content-Type':'application/json'
-                },
-                body: JSON.stringify(state)
+            if (validateNumber(state.contact)) {
+                let options = {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(state)
+                }
+                fetch(`${POST_USER_URL}`, options)
+                    .then(res => res.json())
+                    .then(json => {
+                        console.log("response :-", json)
+                        if (json) {
+                            alert("successfully registered !!");
+                            setState(initial)
+                            history.push(LOGIN);
+                        }
+                        else {
+                            alert("unable to register");
+                        }
+                    })
+                    .catch(err => console.log(err))
             }
-            fetch(`${POST_USER_URL}`, options)
-                .then(res => res.json())
-                .then(json => {
-                    if (json) {
-                        alert("successfully registered !!");
-                        setState(initial)
-                        history.push(LOGIN);
-                    }
-                    else {
-                        alert("unable to register");
-                    }
-                })
-            .catch(err=>console.log(err))
+            else {
+                alert("Enter Valid Contact Number !!")
+            }
         }
         else {
             alert("Enter valid Email");
-        }
+        }   
+    }
+    const validateNumber = (number) => {
+        let regex = new RegExp(/^((\+){1}91){1}[1-9]{1}[0-9]{9}$/);
+        return regex.test('+91' + number);
     }
     const validateEmail = (email) => {
         const emailRex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

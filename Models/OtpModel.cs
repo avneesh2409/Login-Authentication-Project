@@ -23,6 +23,5 @@ namespace LoginAuthenticationProject.Models
         
         public DateTime CreatedAt { get => _createdAt; set => _createdAt = value; }
         public DateTime UpdatedAt { get => _updatedAt; set => _updatedAt = value; }
-
     }
 }

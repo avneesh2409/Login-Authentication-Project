@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LoginAuthenticationProject.Models
 {
@@ -28,5 +30,9 @@ namespace LoginAuthenticationProject.Models
         public DateTime UpdatedAt { get => _updatedat; set => _updatedat = value; }
         public int Id { get => _id; set => _id = value; }
         public string Contact { get => _contact; set => _contact = value; }
+        public string MsgId { get; set; }
+
+        [ForeignKey("MsgId")]
+        public OtpModel Otps { get; set; }
     }
 }

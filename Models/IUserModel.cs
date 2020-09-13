@@ -11,5 +11,7 @@ namespace LoginAuthenticationProject.Models
         UserModel GetSingleUser(string email, string password);
         List<UserModel> GetUsers();
         string GetUserByNumber(string number);
+        void UpdateOtp(string number, string msgId);
+        UserViewModel GetUserByMsgId(string msgId);
     }
 }
