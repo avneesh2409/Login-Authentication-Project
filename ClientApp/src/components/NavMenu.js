@@ -13,6 +13,12 @@ export const NavMenu = ({ access_token }) => {
                             <ul className="navbar-nav flex-grow">
                                 {
                                     (!access_token) ? <>
+                                     <NavItem>
+                                            <NavLink tag={Link} className="text-dark" to="/redirect">Redirect</NavLink>
+                                        </NavItem>
+                                        <NavItem>
+                                            <NavLink tag={Link} className="text-dark" to="/zoom">Zoom</NavLink>
+                                        </NavItem>
                                         <NavItem>
                                             <NavLink tag={Link} className="text-dark" to={`${LOGIN}`}>Login</NavLink>
                                         </NavItem>
