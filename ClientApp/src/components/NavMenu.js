@@ -20,6 +20,9 @@ export const NavMenu = ({ access_token }) => {
                                             <NavLink tag={Link} className="text-dark" to="/zoom">Zoom</NavLink>
                                         </NavItem>
                                         <NavItem>
+                                            <NavLink tag={Link} className="text-dark" to="/payment">PayUMoneyGateway</NavLink>
+                                        </NavItem>
+                                        <NavItem>
                                             <NavLink tag={Link} className="text-dark" to={`${LOGIN}`}>Login</NavLink>
                                         </NavItem>
                                         <NavItem>

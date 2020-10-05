@@ -75,7 +75,7 @@ services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
             app.UseRouting();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseMvc();
             app.UseEndpoints(endpoints =>
             {

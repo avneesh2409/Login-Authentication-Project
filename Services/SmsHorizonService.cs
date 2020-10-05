@@ -1,18 +1,27 @@
-﻿using System;
-using System.IO   ;
-using System.Net  ;
-using System.Text ;
+﻿using System.Security.Claims;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
+
 
 namespace LoginAuthenticationProject.Services
 {
-    public class SmsHorizonService
+    public class AuthorizationAttribute : TypeFilterAttribute, IAuthorizationFilter
     {
-        private readonly IConfiguration _config;
-
-        public SmsHorizonService(IConfiguration config)
+        public AuthorizationAttribute() : base(typeof(AuthorizationAttribute))
         {
-            _config = config;
+           
+        }
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
+            var hasClaim = context.HttpContext.Request.Headers.ContainsKey("Authorization");
+            if (!hasClaim)
+            {
+                context.Result = new ForbidResult();
+            }
         }
     }
 }

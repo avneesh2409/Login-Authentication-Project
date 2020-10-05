@@ -1,27 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { Button } from 'reactstrap';
+//import { Button } from 'reactstrap';
 
 const Redirectroute = (props) =>{
-    const {history,location} = props;
-    const [state,setState] = useState({});
-    console.log(props)
+    const { location } = props;
+    const [state, setState] = useState({})
     useEffect(()=>{
-            fetch(`https://localhost:44377/api/zoom/authorize`)
-            .then(res=>res.json())
-            .then(json=>{
-                if(json){
-                    setState({...json})
-                }
+        if (location.search) {
+            location.search.split("?")[1].split("&").forEach(e => {
+                let [key, value] = e.split("=");
+                setState({
+                    ...state,
+                    [key]: value
+                })
             })
-            .catch(err=>console.log("error coming :-",err))
-    },[])
-    const clickHandler = (e) =>{
-        window.location.href = state.url;
-    }
-    console.log("url sent :-",state);
-    return (
+        }
+        else {
+            alert("Transaction failed !!")
+        }
+    }, [])
+    console.log(state)
+  return (
         <>
-            <Button onClick={clickHandler} disabled={(state.url)?false:true}>Join Zoom</Button>
+          Hello We are in Redirect Page
+          {
+              (state.refReqId) ? <h1>Transaction Successfull Transaction Id :- {state.refReqId}</h1>:<h1>Transaction Failed</h1>
+          }
         </>
     )
 }

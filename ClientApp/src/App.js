@@ -11,6 +11,7 @@ import LoginForm from './components/child/LoginComponent';
 import { LOGOUT, HOME, REGISTER, LOGIN } from './constants';
 import Zoomcomponent from './components/ZoomComponent';
 import Redirectroute from './components/RedirectRoute';
+import PayUMoneyGateway from './components/child/PayuMoneyGateway';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,8 +27,9 @@ const App = () => {
                     <>
                         <Route exact path={`${REGISTER}`} component={RegistrationForm} />
                         <Route exact path={`${LOGIN}`} render={(props) => <LoginForm {...props} setIsLoggedIn={setIsLoggedIn} />} />
-                        <Route path="/redirect" component={Redirectroute} />
+                        <Route path="/notify" component={Redirectroute} />
                         <Route path="/zoom" component={Zoomcomponent} />
+                        <Route path="/payment" component={PayUMoneyGateway} />
                         {/* <Route path="*" render={() => <Redirect to={`${LOGIN}`} />} /> */}
 
                     </>

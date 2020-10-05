@@ -9,10 +9,10 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using LoginAuthenticationProject.Services;
 
 namespace LoginAuthenticationProject.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class HomeController : Controller
@@ -28,7 +28,6 @@ namespace LoginAuthenticationProject.Controllers
         }
 
         #region OTP Authentication
-        [AllowAnonymous]
         [HttpGet]
         [Route("verify-otp/{msgId}/{recieveotp}")]
         public JsonResult VerifyOtp(string msgId,string recieveotp) {
@@ -57,7 +56,6 @@ namespace LoginAuthenticationProject.Controllers
             }
             
         }
-        [AllowAnonymous]
         [HttpGet]
         [Route("sent-otp/{number}")]
         public JsonResult StoreOtp(string number) {
@@ -156,7 +154,6 @@ namespace LoginAuthenticationProject.Controllers
         #endregion
         #region Token Authentication
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
         public JsonResult Login(LoginModel login)
@@ -205,13 +202,14 @@ namespace LoginAuthenticationProject.Controllers
         }
         #endregion
 
-        [AllowAnonymous]
+
         [HttpPost]
         [Route("post-user")]
         public ObjectResult PostUser(UserModel user) {
             var userResult = _userContext.AddUsers(user);
             return new ObjectResult(userResult);
         }
+        //[Authorization]
         [Route("get-users")]
         public ObjectResult GetUsers()
         {
